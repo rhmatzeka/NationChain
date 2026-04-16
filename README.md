@@ -284,10 +284,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Project Stats
 
-![GitHub stars](https://img.shields.io/github/stars/rahmatsatria/nationchain?style=social)
-![GitHub forks](https://img.shields.io/github/forks/rahmatsatria/nationchain?style=social)
-![GitHub issues](https://img.shields.io/github/issues/rahmatsatria/nationchain)
-![GitHub license](https://img.shields.io/github/license/rahmatsatria/nationchain)
+![GitHub stars](https://img.shields.io/github/stars/rhmatzeka/NationChain?style=social)
+![GitHub forks](https://img.shields.io/github/forks/rhmatzeka/NationChain?style=social)
+![GitHub issues](https://img.shields.io/github/issues/rhmatzeka/NationChain)
+![GitHub license](https://img.shields.io/github/license/rhmatzeka/NationChain)
 
 ---
 
