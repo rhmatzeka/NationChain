@@ -1,0 +1,20 @@
+{
+  "name": "nationchain",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NationChain multiplayer blockchain president simulator",
+  "workspaces": ["contracts", "backend", "frontend"],
+  "scripts": {
+    "compile": "npm run compile -w contracts",
+    "deploy:sepolia": "npm run deploy:sepolia -w contracts",
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "build": "npm run build -w backend && npm run build -w frontend"
+  },
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
+  }
+}

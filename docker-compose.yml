@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nationchain-postgres
+    environment:
+      POSTGRES_USER: nationchain
+      POSTGRES_PASSWORD: nationchain
+      POSTGRES_DB: nationchain
+    ports:
+      - "5432:5432"
+    volumes:
+      - nationchain_pg:/var/lib/postgresql/data
+
+volumes:
+  nationchain_pg:

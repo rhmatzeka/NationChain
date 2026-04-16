@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  wallet    String    @id
+  ensName   String?   @map("ens_name")
+  avatar    String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  lastSeen  DateTime  @default(now()) @map("last_seen")
+  countries Country[]
+  messages  ChatMessage[]
+
+  @@map("players")
+}
+
+model Country {
+  id           Int       @id
+  name         String
+  isoCode      String    @unique @map("iso_code")
+  ownerWallet  String?   @map("owner_wallet")
+  owner        Player?   @relation(fields: [ownerWallet], references: [wallet])
+  gdp          Int
+  military     Int
+  happiness    Int
+  oil          Int
+  food         Int
+  gold         Int
+  iron         Int       @default(50)
+  uranium      Int       @default(10)
+  territory    Int
+  ideology     String
+  latitude     Float     @default(0)
+  longitude    Float     @default(0)
+  color        String    @default("#475569")
+  online       Boolean   @default(false)
+  tokensEarned Int       @default(0) @map("tokens_earned")
+  warsWon      Int       @default(0) @map("wars_won")
+  lastUpdated  DateTime  @updatedAt @map("last_updated")
+  buildings    Building[]
+  attacks      War[]     @relation("Attacker")
+  defenses     War[]     @relation("Defender")
+
+  @@index([ownerWallet])
+  @@map("countries")
+}
+
+model Building {
+  id          Int      @id @default(autoincrement())
+  countryId   Int      @map("country_id")
+  country     Country  @relation(fields: [countryId], references: [id])
+  buildingType Int     @map("building_type")
+  level       Int
+  nftTokenId  Int      @map("nft_token_id")
+
+  @@unique([countryId, buildingType])
+  @@map("buildings")
+}
+
+model War {
+  id          Int      @id @default(autoincrement())
+  attackerId  Int      @map("attacker_id")
+  defenderId  Int      @map("defender_id")
+  attacker    Country  @relation("Attacker", fields: [attackerId], references: [id])
+  defender    Country  @relation("Defender", fields: [defenderId], references: [id])
+  startTime   DateTime @default(now()) @map("start_time")
+  endTime     DateTime? @map("end_time")
+  winnerId    Int?     @map("winner_id")
+  status      String
+  battleLog   Json     @default("[]") @map("battle_log")
+
+  @@index([status])
+  @@map("wars")
+}
+
+model Alliance {
+  id               Int      @id @default(autoincrement())
+  name             String
+  memberCountryIds Json     @map("member_country_ids")
+  treasuryAddress  String   @map("treasury_address")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@map("alliances")
+}
+
+model DiplomacyProposal {
+  id          Int      @id @default(autoincrement())
+  fromCountry Int      @map("from_country")
+  toCountry   Int      @map("to_country")
+  type        String
+  terms       Json
+  status      String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("diplomacy_proposals")
+}
+
+model NewsEvent {
+  id                Int      @id @default(autoincrement())
+  headline          String
+  sourceUrl         String   @map("source_url")
+  affectedCountries Json     @map("affected_countries")
+  eventType         String   @map("event_type")
+  severity          Int
+  gameEffects       Json     @map("game_effects")
+  aiAnalysis        Json     @map("ai_analysis")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@index([eventType])
+  @@map("news_events")
+}
+
+model CommodityPrice {
+  timestamp         DateTime @id @default(now())
+  oilUsd            Float    @map("oil_usd")
+  goldUsd           Float    @map("gold_usd")
+  appliedMultiplier Json     @map("applied_multiplier")
+
+  @@map("commodity_prices")
+}
+
+model LeaderboardSnapshot {
+  date              DateTime @id
+  rankingsByGdp     Json     @map("rankings_by_gdp")
+  rankingsByMilitary Json    @map("rankings_by_military")
+  rankingsByTokens  Json     @map("rankings_by_tokens")
+
+  @@map("leaderboard_snapshots")
+}
+
+model ChatMessage {
+  id           Int      @id @default(autoincrement())
+  allianceId   Int?     @map("alliance_id")
+  senderWallet String   @map("sender_wallet")
+  sender       Player   @relation(fields: [senderWallet], references: [wallet])
+  content      String
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([allianceId])
+  @@map("chat_messages")
+}
