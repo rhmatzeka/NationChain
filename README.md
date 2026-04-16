@@ -2,7 +2,7 @@
 
 **A blockchain-powered geopolitical strategy game where you control nations, wage wars, and dominate the world economy.**
 
-Built by **Rahmat Eka Satria** | [GitHub](https://github.com/rahmatsatria) | [LinkedIn](https://linkedin.com/in/rahmatsatria)
+Built by **Rahmat Eka Satria** | [GitHub](https://github.com/rhmatzeka) | [Portfolio](https://rhmatzeka.dev)
 
 ![NationChain Banner](https://img.shields.io/badge/NationChain-Blockchain%20Strategy%20Game-30e8bd?style=for-the-badge)
 ![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-3C3C3D?style=for-the-badge&logo=ethereum)
