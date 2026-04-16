@@ -265,10 +265,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Rahmat Eka Satria**
 
-- GitHub: [@rahmatsatria](https://github.com/rahmatsatria)
-- LinkedIn: [Rahmat Eka Satria](https://linkedin.com/in/rahmatsatria)
-- Email: rahmat@example.com
-- Portfolio: [rahmatsatria.dev](https://rahmatsatria.dev)
+- GitHub: [@rhmatzeka](https://github.com/rhmatzeka)
+- Portfolio: [rhmatzeka.dev](https://rhmatzeka.dev)
+- Email: contact@rhmatzeka.dev
 
 ---
 
