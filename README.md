@@ -151,7 +151,17 @@ Backend API: http://localhost:4000
 nationchain/
 ├── frontend/              # Next.js frontend
 │   ├── app/              # App router pages
+│   │   ├── dashboard/   # Main game interface
+│   │   ├── marketplace/ # NFT trading
+│   │   ├── my-nfts/     # User collection
+│   │   ├── leaderboard/ # Rankings
+│   │   ├── about/       # Game info
+│   │   └── settings/    # User preferences
 │   ├── components/       # React components
+│   │   ├── WorldMap.tsx
+│   │   ├── CountryDashboard.tsx
+│   │   ├── CountryLeaderPopup.tsx
+│   │   └── YouTubeMusicPlayer.tsx
 │   ├── hooks/           # Custom React hooks
 │   ├── lib/             # Utilities and configs
 │   └── types/           # TypeScript types
@@ -159,12 +169,25 @@ nationchain/
 │   ├── src/
 │   │   ├── routes/      # API routes
 │   │   ├── services/    # Business logic
+│   │   │   ├── newsOracle.ts
+│   │   │   ├── commodityOracle.ts
+│   │   │   ├── blockchain.ts
+│   │   │   └── dailyReset.ts
 │   │   └── websocket/   # Socket.io server
 │   └── prisma/          # Database schema & migrations
 ├── contracts/            # Solidity smart contracts
 │   ├── contracts/       # Contract source files
+│   │   ├── CountryNFT.sol
+│   │   ├── GameCore.sol
+│   │   ├── WarSystem.sol
+│   │   └── Marketplace.sol
 │   ├── scripts/         # Deployment scripts
 │   └── test/           # Contract tests
+├── docs/                # Documentation
+│   ├── ARCHITECTURE.md
+│   ├── API.md
+│   ├── DEPLOYMENT.md
+│   └── SMART_CONTRACTS.md
 └── package.json         # Monorepo root
 ```
 
