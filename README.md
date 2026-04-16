@@ -13,12 +13,13 @@ Built by **Rahmat Eka Satria** | [GitHub](https://github.com/rhmatzeka) | [Portf
 
 ## 🎮 About the Game
 
-NationChain is a full-stack Web3 strategy game that combines:
+NationChain is a revolutionary full-stack Web3 strategy game that combines:
 - **Real-world geopolitics** - Control 180 actual countries as NFTs
 - **Blockchain technology** - All assets are on-chain (Ethereum Sepolia)
 - **Dynamic economy** - GDP, resources, and token rewards
 - **Strategic warfare** - Declare wars, form alliances, conquer territories
 - **Real-time events** - Game affected by actual news and commodity prices
+- **Immersive gameplay** - Epic music, interactive maps, and leader characters
 
 ### 🎯 Game Features
 
