@@ -104,22 +104,17 @@ export default function AboutPage() {
                 <SocialLink
                   icon={<Github className="h-5 w-5" />}
                   label="GitHub"
-                  href="https://github.com/rahmatsatria"
-                />
-                <SocialLink
-                  icon={<Linkedin className="h-5 w-5" />}
-                  label="LinkedIn"
-                  href="https://linkedin.com/in/rahmatsatria"
-                />
-                <SocialLink
-                  icon={<Mail className="h-5 w-5" />}
-                  label="Email"
-                  href="mailto:rahmat@example.com"
+                  href="https://github.com/rhmatzeka"
                 />
                 <SocialLink
                   icon={<Globe className="h-5 w-5" />}
                   label="Portfolio"
-                  href="https://rahmatsatria.dev"
+                  href="https://rhmatzeka.dev"
+                />
+                <SocialLink
+                  icon={<Mail className="h-5 w-5" />}
+                  label="Email"
+                  href="mailto:contact@rhmatzeka.dev"
                 />
               </div>
             </div>
@@ -149,7 +144,7 @@ export default function AboutPage() {
               Start Playing
             </a>
             <a
-              href="https://github.com/rahmatsatria/nationchain"
+              href="https://github.com/rhmatzeka/NationChain"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-bold text-white hover:bg-white/10 transition"
