@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "../prisma.js";
 import type { NationChainIO } from "../websocket/server.js";
 import { injectManualNews } from "../services/newsOracle.js";
-import { initializeCountryOnChain } from "../services/blockchain.js";
+import { initializeCountryOnChain, mintGovTokens } from "../services/blockchain.js";
 
 export function apiRouter(io: NationChainIO) {
   const router = Router();
@@ -167,6 +167,126 @@ export function apiRouter(io: NationChainIO) {
       const event = await injectManualNews(io, payload);
       res.status(201).json(event);
     } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post("/war/declare", async (req, res, next) => {
+    try {
+      const schema = z.object({
+        attackerId: z.number(),
+        defenderId: z.number(),
+        wallet: z.string().regex(/^0x[a-fA-F0-9]{40}$/)
+      });
+      const { attackerId, defenderId, wallet } = schema.parse(req.body);
+
+      const attacker = await prisma.country.findUnique({ where: { id: attackerId } });
+      const defender = await prisma.country.findUnique({ where: { id: defenderId } });
+
+      if (!attacker || !defender) {
+        return res.status(404).json({ error: "Country not found" });
+      }
+
+      if (attacker.ownerWallet?.toLowerCase() !== wallet.toLowerCase()) {
+        return res.status(403).json({ error: "You don't own this country" });
+      }
+
+      // Create war in database
+      const war = await prisma.war.create({
+        data: {
+          attackerId,
+          defenderId,
+          startTime: new Date(),
+          endTime: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+          status: "active",
+          battleLog: []
+        }
+      });
+
+      // Emit real-time update
+      io.emit("war:declared", { war, attacker, defender });
+
+      res.json({ success: true, war });
+    } catch (error) {
+      console.error("Declare war error:", error);
+      next(error);
+    }
+  });
+
+  router.post("/country/:id/claim-gov", async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const schema = z.object({ wallet: z.string().regex(/^0x[a-fA-F0-9]{40}$/) });
+      const { wallet } = schema.parse(req.body);
+
+      const country = await prisma.country.findUnique({ where: { id } });
+      if (!country) return res.status(404).json({ error: "Country not found" });
+      
+      if (country.ownerWallet?.toLowerCase() !== wallet.toLowerCase()) {
+        return res.status(403).json({ error: "You don't own this country" });
+      }
+
+      // Calculate daily GOV tokens
+      const dailyGov = Math.round(country.gdp / 80 + country.happiness * 2 + country.oil * 1.2);
+
+      console.log("Minting GOV tokens:", dailyGov, "to", wallet);
+
+      // Mint GOV tokens to user's wallet
+      const result = await mintGovTokens(wallet, dailyGov);
+
+      if (result.skipped) {
+        return res.status(500).json({ error: `Blockchain error: ${result.reason}` });
+      }
+
+      console.log("GOV mint successful! TxHash:", result.hash);
+
+      // Update tokens earned in database
+      const updated = await prisma.country.update({
+        where: { id },
+        data: { tokensEarned: country.tokensEarned + dailyGov }
+      });
+
+      io.emit("country:claimed", { countryId: id, amount: dailyGov, txHash: result.hash });
+
+      res.json({ success: true, claimed: dailyGov, newTotal: updated.tokensEarned, txHash: result.hash });
+    } catch (error) {
+      console.error("Claim GOV error:", error);
+      next(error);
+    }
+  });
+
+  router.post("/country/:id/stake-nation", async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const schema = z.object({ 
+        wallet: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+        amount: z.number().min(1)
+      });
+      const { wallet, amount } = schema.parse(req.body);
+
+      const country = await prisma.country.findUnique({ where: { id } });
+      if (!country) return res.status(404).json({ error: "Country not found" });
+      
+      if (country.ownerWallet?.toLowerCase() !== wallet.toLowerCase()) {
+        return res.status(403).json({ error: "You don't own this country" });
+      }
+
+      // Increase military power based on staked amount
+      const militaryBoost = Math.floor(amount / 100);
+      
+      const updated = await prisma.country.update({
+        where: { id },
+        data: { 
+          military: country.military + militaryBoost,
+          tokensEarned: country.tokensEarned + amount
+        }
+      });
+
+      io.emit("country:staked", { countryId: id, amount, militaryBoost });
+
+      res.json({ success: true, staked: amount, militaryBoost, newMilitary: updated.military });
+    } catch (error) {
+      console.error("Stake NATION error:", error);
       next(error);
     }
   });
