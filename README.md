@@ -24,10 +24,14 @@ NationChain is a revolutionary full-stack Web3 strategy game that combines:
 ### 🎯 Game Features
 
 - 🏛️ **Own Countries as NFTs** - Mint and trade country NFTs on the marketplace
-- ⚔️ **Wage Wars** - Attack other nations, defend your territory
+- ⚔️ **Wage Wars** - Attack other nations, defend your territory (1000 NATION per war)
 - 💰 **Manage Economy** - Control GDP, taxes, resources (oil, gold, iron)
+- 💎 **Claim Daily Tokens** - Earn GOV tokens based on GDP, Happiness, and Oil
+- 🚀 **Stake NATION** - Boost military power (100 NATION = +1 Military)
 - 🏗️ **Build Infrastructure** - Factories, barracks, oil derricks, embassies
 - 🤝 **Diplomacy** - Form alliances, trade with other players
+
+📖 **[Complete Gameplay Guide →](./GAMEPLAY.md)**
 - 📰 **Real-World Integration** - News events affect gameplay
 - 🎵 **Epic Soundtrack** - Immersive war music
 - 🗺️ **Interactive World Map** - Leaflet.js powered global view
