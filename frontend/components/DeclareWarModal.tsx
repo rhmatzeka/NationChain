@@ -2,32 +2,55 @@
 
 import { useState } from "react";
 import { Swords, X, AlertTriangle, Target } from "lucide-react";
+import { useAccount } from "wagmi";
 import type { Country } from "@/types/game";
 
 export function DeclareWarModal({ 
   open, 
   onClose, 
   currentCountry,
-  availableCountries 
+  availableCountries,
+  onSuccess
 }: { 
   open: boolean; 
   onClose: () => void;
   currentCountry?: Country;
   availableCountries: Country[];
+  onSuccess?: (message: string) => void;
 }) {
+  const { address, isConnected } = useAccount();
   const [selectedTarget, setSelectedTarget] = useState<number | null>(null);
   const [declaring, setDeclaring] = useState(false);
 
-  const handleDeclare = () => {
-    if (!selectedTarget) return;
-    setDeclaring(true);
+  const handleDeclare = async () => {
+    if (!selectedTarget || !currentCountry || !isConnected || !address) return;
     
-    // TODO: Call smart contract
-    setTimeout(() => {
-      setDeclaring(false);
+    setDeclaring(true);
+    try {
+      const response = await fetch(`http://localhost:4000/api/war/declare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          attackerId: currentCountry.id,
+          defenderId: selectedTarget,
+          wallet: address
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to declare war');
+      }
+
+      onSuccess?.(`⚔️ War declared successfully against ${availableCountries.find(c => c.id === selectedTarget)?.name}!`);
       onClose();
-      // Show success notification
-    }, 2000);
+    } catch (error: any) {
+      console.error("Declare war error:", error);
+      onSuccess?.(`❌ Failed: ${error.message || 'Transaction rejected'}`);
+    } finally {
+      setDeclaring(false);
+    }
   };
 
   if (!open) return null;
@@ -60,6 +83,12 @@ export function DeclareWarModal({
             <p className="text-amber-200/80 mt-1">This action will initiate a 1-hour battle. Your military forces will be committed. Cost: {cost} NATION tokens.</p>
           </div>
         </div>
+
+        {!isConnected && (
+          <div className="mt-4 rounded border border-alert/40 bg-alert/10 p-3 text-center text-sm text-alert">
+            Please connect your wallet to declare war
+          </div>
+        )}
 
         {/* Current Country Info */}
         <div className="mt-6 rounded border border-white/10 bg-obsidian/50 p-4">
@@ -136,7 +165,7 @@ export function DeclareWarModal({
           </button>
           <button
             onClick={handleDeclare}
-            disabled={!selectedTarget || declaring}
+            disabled={!selectedTarget || declaring || !isConnected}
             className="flex-1 rounded bg-alert px-4 py-3 font-semibold text-white hover:bg-alert/90 disabled:opacity-50 disabled:cursor-not-allowed transition inline-flex items-center justify-center gap-2"
           >
             <Swords className="h-5 w-5" />
