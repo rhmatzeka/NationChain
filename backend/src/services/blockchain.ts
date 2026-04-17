@@ -6,7 +6,12 @@ import { config } from "../config.js";
 const gameCoreAbi = parseAbi([
   "function applyNewsEffect(uint256 countryId,string effectType,int256 magnitude)",
   "function updateCommodityMultipliers(uint256 oilMultiplierBps,uint256 goldMultiplierBps)",
-  "function initializeCountry(address ownerAddress,uint256 countryId,string name,string isoCode,(uint256 gdp,uint256 population,uint256 militaryPower,uint256 happiness,uint256 oilReserves,uint256 territory) stats)"
+  "function initializeCountry(address ownerAddress,uint256 countryId,string name,string isoCode,(uint256 gdp,uint256 population,uint256 militaryPower,uint256 happiness,uint256 oilReserves,uint256 territory) stats)",
+  "function dailyClaim(uint256 countryId)"
+]);
+
+const govTokenAbi = parseAbi([
+  "function mint(address to, uint256 amount)"
 ]);
 
 const warSystemAbi = parseAbi(["function resolveWar(uint256 battleId,uint256 winnerId)"]);
@@ -92,5 +97,45 @@ export async function resolveWarOnChain(battleId: number, winnerId: number) {
     functionName: "resolveWar",
     args: [BigInt(battleId), BigInt(winnerId)]
   });
+  return { skipped: false, hash };
+}
+
+export async function mintGovTokens(toAddress: string, amount: number) {
+  console.log("mintGovTokens called with:", { toAddress, amount });
+  console.log("config.govTokenAddress:", config.govTokenAddress);
+  
+  if (!config.govTokenAddress) return { skipped: true, reason: "GOV_TOKEN_ADDRESS not configured" };
+  const client = walletClient();
+  if (!client) return { skipped: true, reason: "ORACLE_PRIVATE_KEY not configured" };
+  
+  // Convert amount to wei (18 decimals)
+  const amountWei = BigInt(amount) * BigInt(10 ** 18);
+  
+  console.log("Minting", amountWei.toString(), "wei to", toAddress);
+  
+  const hash = await client.writeContract({
+    address: config.govTokenAddress as Address,
+    abi: govTokenAbi,
+    functionName: "mint",
+    args: [toAddress as Address, amountWei]
+  });
+  
+  await publicClient.waitForTransactionReceipt({ hash });
+  return { skipped: false, hash };
+}
+
+export async function claimDailyGov(countryId: number) {
+  if (!config.gameCoreAddress) return { skipped: true, reason: "GAME_CORE_ADDRESS not configured" };
+  const client = walletClient();
+  if (!client) return { skipped: true, reason: "ORACLE_PRIVATE_KEY not configured" };
+  
+  const hash = await client.writeContract({
+    address: config.gameCoreAddress as Address,
+    abi: gameCoreAbi,
+    functionName: "dailyClaim",
+    args: [BigInt(countryId)]
+  });
+  
+  await publicClient.waitForTransactionReceipt({ hash });
   return { skipped: false, hash };
 }
