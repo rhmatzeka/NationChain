@@ -14,7 +14,80 @@ export function CountryDashboard({ country, commodities, wars, allCountries }: {
   const [tab, setTab] = useState<(typeof tabs)[number]>("Economy");
   const [minimized, setMinimized] = useState(false);
   const [warModalOpen, setWarModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [claiming, setClaiming] = useState(false);
+  const [staking, setStaking] = useState(false);
   const chart = useMemo(() => Array.from({ length: 30 }, (_, i) => ({ day: i + 1, gdp: Math.round((country?.gdp || 1000) * (0.88 + i / 180 + Math.sin(i) / 40)) })), [country?.gdp]);
+  
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 5000);
+  };
+
+  const handleClaimGov = async () => {
+    if (!country || claiming) return;
+    
+    // Get wallet address from wagmi
+    const walletAddress = (window as any).ethereum?.selectedAddress;
+    if (!walletAddress) {
+      showToast("❌ Please connect your wallet");
+      return;
+    }
+
+    setClaiming(true);
+    try {
+      const response = await fetch(`http://localhost:4000/api/country/${country.id}/claim-gov`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet: walletAddress })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to claim GOV');
+      }
+
+      showToast(`✅ Claimed ${data.claimed} GOV tokens! Total: ${data.newTotal}`);
+    } catch (error: any) {
+      showToast(`❌ Failed: ${error.message}`);
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  const handleStakeNation = async () => {
+    if (!country || staking) return;
+    
+    const walletAddress = (window as any).ethereum?.selectedAddress;
+    if (!walletAddress) {
+      showToast("❌ Please connect your wallet");
+      return;
+    }
+
+    const amount = 1000; // Default stake amount
+
+    setStaking(true);
+    try {
+      const response = await fetch(`http://localhost:4000/api/country/${country.id}/stake-nation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet: walletAddress, amount })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to stake NATION');
+      }
+
+      showToast(`✅ Staked ${data.staked} NATION! Military +${data.militaryBoost} (New: ${data.newMilitary})`);
+    } catch (error: any) {
+      showToast(`❌ Failed: ${error.message}`);
+    } finally {
+      setStaking(false);
+    }
+  };
   
   if (!country) {
     return (
@@ -136,8 +209,20 @@ export function CountryDashboard({ country, commodities, wars, allCountries }: {
             <div className="grid grid-cols-2 gap-3">
               <StatChip icon={WalletCards} label="NATION" value={country.tokensEarned} />
               <StatChip icon={Banknote} label="GOV Claim" value={`${dailyGov}/day`} tone="amber" />
-              <button className="rounded bg-radar px-4 py-3 font-semibold text-obsidian">Claim GOV</button>
-              <button className="rounded border border-amberline/40 px-4 py-3 font-semibold text-amberline">Stake NATION</button>
+              <button 
+                onClick={handleClaimGov}
+                disabled={claiming}
+                className="rounded bg-radar px-4 py-3 font-semibold text-obsidian hover:bg-radar/90 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                {claiming ? "Claiming..." : "Claim GOV"}
+              </button>
+              <button 
+                onClick={handleStakeNation}
+                disabled={staking}
+                className="rounded border border-amberline/40 px-4 py-3 font-semibold text-amberline hover:bg-amberline/10 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                {staking ? "Staking..." : "Stake NATION"}
+              </button>
             </div>
             <div className="rounded border border-white/10 bg-obsidian/50 p-4">
               <h3 className="font-semibold text-white">NFT Inventory</h3>
@@ -159,7 +244,14 @@ export function CountryDashboard({ country, commodities, wars, allCountries }: {
         onClose={() => setWarModalOpen(false)}
         currentCountry={country}
         availableCountries={allCountries || []}
+        onSuccess={showToast}
       />
+      
+      {toastMessage && (
+        <div className="fixed bottom-4 right-4 z-[1400] rounded-lg border border-radar/40 bg-steel/95 backdrop-blur-md p-4 shadow-2xl animate-slide-in-right">
+          <p className="text-white">{toastMessage}</p>
+        </div>
+      )}
     </section>
   );
 }
