@@ -62,8 +62,12 @@ const tutorialSteps = [
         <p>The map shows all 180 countries in real-time:</p>
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-3 p-2 rounded bg-obsidian/50">
+            <div className="w-5 h-5 rounded-full bg-yellow-400 border-2 border-yellow-600"></div>
+            <span><strong className="text-yellow-400">GOLD marker</strong> = YOUR country (larger with crown icon)</span>
+          </div>
+          <div className="flex items-center gap-3 p-2 rounded bg-obsidian/50">
             <div className="w-4 h-4 rounded-full bg-cyan-400"></div>
-            <span><strong className="text-cyan-400">Colored dots</strong> = Countries owned by players</span>
+            <span><strong className="text-cyan-400">Cyan dots</strong> = Countries owned by other players</span>
           </div>
           <div className="flex items-center gap-3 p-2 rounded bg-obsidian/50">
             <div className="w-4 h-4 rounded-full bg-slate-500"></div>
@@ -75,7 +79,7 @@ const tutorialSteps = [
           </div>
         </div>
         <p className="text-sm text-slate-300 mt-3">
-          <strong>Tip:</strong> Click any country on the map to see its details, then click "Show Dashboard" to manage it!
+          <strong>Tip:</strong> Click any country to see its leader and stats. Click "Show Dashboard" button at bottom to manage your nation!
         </p>
       </div>
     )
@@ -89,20 +93,28 @@ const tutorialSteps = [
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="p-3 rounded border border-radar/30 bg-radar/5">
             <p className="font-semibold text-radar mb-1">💰 Economy</p>
-            <p className="text-slate-300">Manage resources, adjust tax rates, invest in ministries</p>
+            <p className="text-slate-300">View GDP, resources (Oil, Gold, Food), and economic trends</p>
           </div>
           <div className="p-3 rounded border border-amber-500/30 bg-amber-500/5">
             <p className="font-semibold text-amber-400 mb-1">⚔️ Military</p>
-            <p className="text-slate-300">Build army, declare wars, defend your nation</p>
+            <p className="text-slate-300">Declare wars on other countries, view active battles</p>
           </div>
           <div className="p-3 rounded border border-blue-500/30 bg-blue-500/5">
             <p className="font-semibold text-blue-400 mb-1">🤝 Diplomacy</p>
-            <p className="text-slate-300">Form alliances, trade with others, vote in UN</p>
+            <p className="text-slate-300">Form alliances, trade proposals (coming soon)</p>
           </div>
           <div className="p-3 rounded border border-green-500/30 bg-green-500/5">
             <p className="font-semibold text-green-400 mb-1">💎 Treasury</p>
-            <p className="text-slate-300">Claim GOV tokens, stake NATION, manage NFTs</p>
+            <p className="text-slate-300">Claim daily GOV tokens, stake NATION to boost military</p>
           </div>
+        </div>
+        <div className="mt-3 p-3 rounded bg-obsidian/50 border border-white/10">
+          <p className="text-xs text-slate-400 mb-2">💡 <strong>Pro Tips:</strong></p>
+          <ul className="text-xs text-slate-300 space-y-1">
+            <li>• <strong>Claim GOV daily</strong> - based on your GDP, Happiness, and Oil</li>
+            <li>• <strong>Stake NATION</strong> - every 100 NATION = +1 Military Power</li>
+            <li>• <strong>Declare War</strong> - costs 1000 NATION, battle lasts 1 hour</li>
+          </ul>
         </div>
       </div>
     )
