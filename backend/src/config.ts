@@ -9,6 +9,8 @@ export const config = {
   gameCoreAddress: process.env.GAME_CORE_ADDRESS || "",
   warSystemAddress: process.env.WAR_SYSTEM_ADDRESS || "",
   countryNFTAddress: process.env.COUNTRY_NFT_ADDRESS || "",
+  govTokenAddress: process.env.GOV_TOKEN_ADDRESS || "",
+  nationTokenAddress: process.env.NATION_TOKEN_ADDRESS || "",
   newsApiKey: process.env.NEWSAPI_KEY || "",
   gnewsApiKey: process.env.GNEWS_API_KEY || "",
   openaiApiKey: process.env.OPENAI_API_KEY || "",
