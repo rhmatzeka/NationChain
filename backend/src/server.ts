@@ -29,6 +29,12 @@ cron.schedule("*/30 * * * *", () => runNewsOracle(io).catch(console.error));
 cron.schedule("0 * * * *", () => runCommodityOracle(io).catch(console.error));
 cron.schedule("0 0 * * *", () => runDailyReset(io).catch(console.error), { timezone: "UTC" });
 
+// Run news oracle immediately on startup for demo
+setTimeout(() => {
+  console.log("Running initial news oracle...");
+  runNewsOracle(io).catch(console.error);
+}, 5000);
+
 server.listen(config.port, () => {
   console.log(`NationChain backend listening on http://localhost:${config.port}`);
   console.log(`Socket.io endpoint ready at ws://localhost:${config.port}/ws`);

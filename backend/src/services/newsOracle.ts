@@ -151,7 +151,45 @@ function dedupeArticles(articles: Article[]) {
 
 function demoArticles(): Article[] {
   return [
-    { title: "US imposes new sanctions on Iran", url: "https://demo.nationchain.local/news/us-iran-sanctions" },
-    { title: "Saudi Arabia cuts oil production by 1M barrels/day", url: "https://demo.nationchain.local/news/opec-oil-cut" }
+    { 
+      title: "US imposes new sanctions on Iran over nuclear program", 
+      description: "The United States announced comprehensive sanctions targeting Iran's nuclear facilities and military infrastructure.",
+      url: "https://demo.nationchain.local/news/us-iran-sanctions" 
+    },
+    { 
+      title: "Saudi Arabia cuts oil production by 1M barrels/day", 
+      description: "OPEC+ announces major production cuts affecting global oil prices and energy markets.",
+      url: "https://demo.nationchain.local/news/opec-oil-cut" 
+    },
+    { 
+      title: "China announces massive infrastructure investment in Africa", 
+      description: "Beijing commits $50 billion to African infrastructure projects, expanding Belt and Road Initiative.",
+      url: "https://demo.nationchain.local/news/china-africa-investment" 
+    },
+    { 
+      title: "Russia and Ukraine reach temporary ceasefire agreement", 
+      description: "Both nations agree to 48-hour ceasefire for humanitarian corridor negotiations.",
+      url: "https://demo.nationchain.local/news/russia-ukraine-ceasefire" 
+    },
+    { 
+      title: "Major earthquake strikes Turkey, thousands affected", 
+      description: "7.8 magnitude earthquake causes widespread damage across southern Turkey and northern Syria.",
+      url: "https://demo.nationchain.local/news/turkey-earthquake" 
+    },
+    { 
+      title: "India surpasses China as world's most populous nation", 
+      description: "UN data confirms India's population exceeds 1.4 billion, overtaking China for the first time.",
+      url: "https://demo.nationchain.local/news/india-population" 
+    },
+    { 
+      title: "Germany announces €100 billion defense spending increase", 
+      description: "Berlin commits to major military modernization amid European security concerns.",
+      url: "https://demo.nationchain.local/news/germany-defense" 
+    },
+    { 
+      title: "Brazil and Argentina propose common South American currency", 
+      description: "Leaders discuss 'Sur' currency to reduce dependence on US dollar in regional trade.",
+      url: "https://demo.nationchain.local/news/latam-currency" 
+    }
   ];
 }
