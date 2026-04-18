@@ -197,7 +197,7 @@ export function apiRouter(io: NationChainIO) {
           attackerId,
           defenderId,
           startTime: new Date(),
-          endTime: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+          endTime: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes for testing
           status: "active",
           battleLog: []
         }
