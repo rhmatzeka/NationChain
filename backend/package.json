@@ -9,7 +9,8 @@
     "start": "node dist/src/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "test:apis": "node test-apis.js"
   },
   "dependencies": {
     "@prisma/client": "^5.16.1",
