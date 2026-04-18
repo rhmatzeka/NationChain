@@ -9,6 +9,7 @@ import { apiRouter } from "./routes/api.js";
 import { runNewsOracle } from "./services/newsOracle.js";
 import { runCommodityOracle } from "./services/commodityOracle.js";
 import { runDailyReset } from "./services/dailyReset.js";
+import { scheduleWarResolution } from "./services/warResolution.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -28,6 +29,9 @@ app.use(errorHandler);
 cron.schedule("*/30 * * * *", () => runNewsOracle(io).catch(console.error));
 cron.schedule("0 * * * *", () => runCommodityOracle(io).catch(console.error));
 cron.schedule("0 0 * * *", () => runDailyReset(io).catch(console.error), { timezone: "UTC" });
+
+// Start war resolution scheduler
+scheduleWarResolution(io);
 
 // Run news oracle immediately on startup for demo
 setTimeout(() => {

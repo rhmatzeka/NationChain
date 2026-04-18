@@ -32,15 +32,32 @@ export async function injectManualNews(io: NationChainIO, input: { headline: str
 async function fetchLatestArticles(): Promise<Article[]> {
   const query = encodeURIComponent("(geopolitics OR sanctions OR military OR election OR earthquake OR flood OR oil OR economy)");
   const requests: Promise<Article[]>[] = [];
-  if (config.newsApiKey) {
+  
+  // Try real APIs first
+  if (config.newsApiKey && config.newsApiKey !== 'your_newsapi_key') {
     requests.push(fetch(`https://newsapi.org/v2/everything?q=${query}&language=en&pageSize=20&sortBy=publishedAt&apiKey=${config.newsApiKey}`).then((r) => r.json()).then((j) => j.articles || []));
   }
-  if (config.gnewsApiKey) {
+  if (config.gnewsApiKey && config.gnewsApiKey !== 'your_gnews_key') {
     requests.push(fetch(`https://gnews.io/api/v4/search?q=${query}&lang=en&max=10&apikey=${config.gnewsApiKey}`).then((r) => r.json()).then((j) => j.articles || []));
   }
-  if (requests.length === 0) return demoArticles();
+  
+  // If no APIs configured, use enhanced demo articles
+  if (requests.length === 0) {
+    console.log("📰 Using demo news articles (configure API keys for real news)");
+    return demoArticles();
+  }
+  
   const settled = await Promise.allSettled(requests);
-  return settled.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
+  const articles = settled.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
+  
+  // If API calls failed, fallback to demo
+  if (articles.length === 0) {
+    console.log("⚠️ API calls failed, using demo articles");
+    return demoArticles();
+  }
+  
+  console.log(`✅ Fetched ${articles.length} real-world articles`);
+  return articles;
 }
 
 async function analyzeArticle(article: Article): Promise<NewsImpact> {

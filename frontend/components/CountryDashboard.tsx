@@ -187,10 +187,56 @@ export function CountryDashboard({ country, commodities, wars, allCountries }: {
               <button onClick={() => setWarModalOpen(true)} className="rounded border border-alert/40 bg-alert/10 px-4 py-3 font-semibold text-alert hover:bg-alert/20 transition">Declare War</button>
             </div>
             <div className="rounded border border-white/10 bg-obsidian/50 p-4">
-              <h3 className="font-semibold text-white">Active Wars</h3>
-              <div className="mt-3 grid gap-3">
+              <h3 className="font-semibold text-white mb-3">Active Wars & History</h3>
+              <div className="grid gap-2 max-h-64 overflow-y-auto">
                 {activeWars.length === 0 && <p className="text-sm text-slate-400">No active battles.</p>}
-                {activeWars.map((war) => <Progress key={war.id} label={`Battle ${war.id}`} value={58} />)}
+                {activeWars.map((war) => {
+                  const isAttacker = war.attackerId === country.id;
+                  const opponent = isAttacker ? allCountries?.find(c => c.id === war.defenderId) : allCountries?.find(c => c.id === war.attackerId);
+                  const isActive = war.status === 'active';
+                  const isWinner = war.winnerId === country.id;
+                  
+                  return (
+                    <div key={war.id} className={`rounded border p-3 ${
+                      isActive ? 'border-alert/40 bg-alert/10' : 
+                      isWinner ? 'border-green-500/40 bg-green-500/10' : 
+                      'border-red-500/40 bg-red-500/10'
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="text-sm font-semibold text-white">
+                          {isAttacker ? '⚔️ Attacking' : '🛡️ Defending'} vs {opponent?.name || 'Unknown'}
+                        </div>
+                        {isActive && (
+                          <div className="text-xs text-alert animate-pulse">ACTIVE</div>
+                        )}
+                        {!isActive && (
+                          <div className={`text-xs font-bold ${isWinner ? 'text-green-400' : 'text-red-400'}`}>
+                            {isWinner ? '✅ VICTORY' : '❌ DEFEAT'}
+                          </div>
+                        )}
+                      </div>
+                      {isActive && (
+                        <div className="text-xs text-slate-400">
+                          Ends: {new Date(war.endTime).toLocaleString()}
+                        </div>
+                      )}
+                      {!isActive && war.battleLog && Array.isArray(war.battleLog) && (
+                        <div className="text-xs text-slate-300 mt-2 space-y-1">
+                          {war.battleLog.map((log: any, i: number) => {
+                            if (log.event === 'rewards' && isWinner) {
+                              return (
+                                <div key={i} className="text-green-400">
+                                  +{log.territoryGain?.toLocaleString()}km² | +{log.gdpGain?.toLocaleString()} GDP | +{log.tokenReward} NATION
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
