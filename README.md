@@ -321,3 +321,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with ❤️ by Rahmat Eka Satria**
 
 *Dominate the world, one block at a time.* 🌍⛓️
+
+## License
+
+Released under the [MIT License](LICENSE).
